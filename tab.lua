@@ -20,7 +20,7 @@ end
 --[[ a splitter upper function first]]--
 function tasksplt(tasktblLn)
 local wordtbl = {}
-for word in tasktblLn:gmatch("%w+") do
+for word in tasktblLn:gmatch("%g+") do
   table.insert(wordtbl, word)
 end
 --[[
@@ -91,7 +91,7 @@ function doatemplt()
     <img src = {{= xkcdi}}>
     <br>
     <br>
-    <h2> ToDo Stuff </h2>
+    <h2> Overdue Stuff </h2>
     <br>
     <br>
     	<table>
