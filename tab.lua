@@ -5,22 +5,48 @@ jdec = require "cjson"
 
 --[[ get disk space from computers ]]--
 
-function getDisks()
+function getZDisks()
+  local disktbl = {}	
   local zlist = io.popen("zfs list","r")
-  for line in zlist:read() do
-    print(line)
+  for line in zlist:lines() do
+    disktbl.insert(line)  
   end
+  return disktbl
 end
 
 
 --[[ get task warrior stuff ]]--
 
-function tasknow()
-  local taskcmd = io.popen("task overdue","r")
-  for line in taskcmd:read() do
-    print(line)
-  end
+--[[ a splitter upper function first]]--
+function tasksplt(tasktblLn)
+local wordtbl = {}
+for word in tasktblLn:gmatch("%w+") do
+  table.insert(wordtbl, word)
 end
+--[[
+proj = wordtbl[1]
+due = wordtbl[#wordtbl]
+desc = table.concat(wordtbl, " ", 2, (#wordtbl -1))
+
+]]--
+return wordtbl
+end
+
+function taskodue()
+  tasktbl = {}
+  local taskcmd = io.popen("task oduemeta","r")
+  for line in taskcmd:lines() do
+    if #line > 0 then  
+      table.insert(tasktbl, tasksplt(line))
+    end
+  end
+  -- remove the first two entries to the task table
+  table.remove(tasktbl, 1)
+  table.remove(tasktbl, 1)
+  -- probably a better way to do that
+  return tasktbl
+end
+
 
 --[[ reddit top 
 
@@ -63,11 +89,33 @@ function doatemplt()
     <h1> The important Stuff </h1>
     <br>
     <img src = {{= xkcdi}}>
+    <br>
+    <br>
+    <h2> ToDo Stuff </h2>
+    <br>
+    <br>
+    	<table>
+	    <tr>
+	       <th>Project</th>
+	       <th>Due</th>
+	       <th>Description</th>
+	    </tr>
+   	   	{{ for i, tsk in ipairs(tsktbl) do }}
+		<tr>  
+		      <td> {{= tsk[1]}} </td>
+		      <td> {{= tsk[#tsk]}} </td>
+		      <td> {{= table.concat(tsk, " ", 2, (#tsk - 1))}} </td>
+		</tr>   
+		{{end}}
+	</table>
   </body>
   </html>
   ]]
 
-  local values = { xkcdi = xk() }
+  local values = {
+  		xkcdi = xk(),
+		tsktbl = taskodue() 
+	}
 
   local compiled_template = liluat.compile(template)
   local rendered_tmplt = liluat.render(compiled_template, values)
