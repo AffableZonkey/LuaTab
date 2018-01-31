@@ -20,16 +20,16 @@ end
 --[[ a splitter upper function first]]--
 function tasksplt(tasktblLn)
 local wordtbl = {}
-for word in tasktblLn:gmatch("%g+") do
-  table.insert(wordtbl, word)
-end
+	for word in tasktblLn:gmatch("%g+") do
+		table.insert(wordtbl, word)
+	end
 --[[
 proj = wordtbl[1]
 due = wordtbl[#wordtbl]
 desc = table.concat(wordtbl, " ", 2, (#wordtbl -1))
 
 ]]--
-return wordtbl
+	return wordtbl
 end
 
 function taskodue()
@@ -90,6 +90,7 @@ function doatemplt()
     <br>
     <img src = {{= xkcdi}}>
     <br>
+	<iframe src="https://duckduckgo.com/search.html?prefill=Search DuckDuckGo&focus=yes" style="overflow:hidden;margin:0;padding:0;width:408px;height:40px;" frameborder="0"></iframe>
     <br>
     <h2> Overdue Stuff </h2>
     <br>
